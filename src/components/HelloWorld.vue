@@ -1,41 +1,93 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <body>
+    <div id="grid"></div>
+  </body>
 </template>
 
 <script>
 export default {
   name: 'HelloWorld',
+  data() {
+    return {
+      gridData: '',
+      grid: '',
+      row: '',
+      column: '',
+    }
+  },
   props: {
     msg: String
-  }
-}
+  },
+  methods: {
+    gridDataMethod() {
+      var data = new Array();
+      var xpos = 1; //starting xpos and ypos at 1 so the stroke will show when we make the grid below
+      var ypos = 1;
+      var width = 50;
+      var height = 50;
+      var click = 0;
+  
+      // iterate for rows 
+      for (var row = 0; row < 10; row++) {
+        data.push( new Array() );
+    
+        // iterate for cells/columns inside rows
+        for (var column = 0; column < 10; column++) {
+          data[row].push({
+            x: xpos,
+            y: ypos,
+            width: width,
+            height: height,
+            click: click
+          })
+          // increment the x position. I.e. move it over by 50 (width variable)
+          xpos += width;
+        }
+        // reset the x position after a row is complete
+        xpos = 1;
+        // increment the y position for the next row. Move it down 50 (height variable)
+        ypos += height; 
+      }
+      return data;
+    }
+  },
+  mounted() {
+    let recaptchaScript = document.createElement('script')
+    recaptchaScript.setAttribute('src', 'https://d3js.org/d3.v4.min.js')
+    document.head.appendChild(recaptchaScript)
+
+    setTimeout(()=> {this.gridData = this.gridDataMethod();
+
+    this.grid = d3.select("#grid")
+      .append("svg")
+      .attr("width","510px")
+      .attr("height","510px");
+
+    this.row = this.grid.selectAll(".row")
+      .data(this.gridData)
+      .enter().append("g")
+      .attr("class", "row");
+
+    this.column = this.row.selectAll(".square")
+      .data(function(d) { return d; })
+      .enter().append("rect")
+      .attr("class","square")
+      .attr("x", function(d) { return d.x; })
+      .attr("y", function(d) { return d.y; })
+      .attr("width", function(d) { return d.width; })
+      .attr("height", function(d) { return d.height; })
+      .style("fill", "#fff")
+      .style("stroke", "#222")
+      .on('click', function(d) {
+        d.click ++;
+        if ((d.click)%4 == 0 ) { d3.select(this).style("fill","#fff"); }
+        if ((d.click)%4 == 1 ) { d3.select(this).style("fill","#2C93E8"); }
+        if ((d.click)%4 == 2 ) { d3.select(this).style("fill","#F56C4E"); }
+        if ((d.click)%4 == 3 ) { d3.select(this).style("fill","#838690"); }
+        });
+    }, 1000)
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
