@@ -7,13 +7,9 @@
         <div class="row">
           <div id="terminal-log" class="col-sm-12">
             <ul>
-              <li v-for="i in 8" :key="i">
-                {{ commands[8-i] }} 
+              <li v-for="i in commands.length" :key="i">
+                {{ commands[commands.length-i] }} 
               </li>
-
-              <!-- <li v-for="i in commands" :key="i">
-                {{ commands[commands.length-i-1] }} 
-              </li> -->
             </ul>
           </div>
 
