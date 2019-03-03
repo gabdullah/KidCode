@@ -41,7 +41,7 @@ export default {
       err: '',
       ox: -1,
       oy: -1,
-      commands: [],
+      commands: ['Welcome to KidCode! Type -h to get a list of commands.'],
       consoleInput: ''
     }
   },
@@ -263,7 +263,7 @@ export default {
         this.moveLeft()
       }
       else {
-        this.commands.unshift('No command  ' + this.consoleInput + ' exists, please try another command or type -h to see a list of the commands')
+        this.commands.unshift('No command  ' + '"' + this.consoleInput + '"' + ' exists, please try another command or type -h to see a list of the commands')
       }
       this.consoleInput = '';
     },
