@@ -20,7 +20,7 @@
           <div id="terminal-input" class="col-sm-12">
             <div class="input-group">
               <span style=";" class="form-control col-sm-1">></span>
-              <input type="text" class="form-control col-sm-11" v-model="consoleInput" @keyup.enter="submitCommand(consoleInput)" maxlength="15">    
+              <input type="text" class="form-control col-sm-11" v-model="consoleInput" @keyup.enter="submitCommand(consoleInput)" @keyup.up="usePreviousCommands(1)" @keyup.down="usePreviousCommands(-1)" maxlength="15">    
             </div>
           </div>
         </div>
@@ -42,7 +42,9 @@ export default {
       ox: -1,
       oy: -1,
       commands: ['Welcome to KidCode! Type -h to get a list of commands.'],
-      consoleInput: ''
+      commandHistory: [],
+      consoleInput: '',
+      currentCommand: 0
     }
   },
   props: {
@@ -388,11 +390,26 @@ export default {
       else {
         this.commands.unshift('No command  ' + '"' + this.consoleInput + '"' + ' exists, please try another command or type -h to see a list of the commands')
       }
+      this.commandHistory.push(this.consoleInput)
+      console.log(this.commandHistory[0])
       this.consoleInput = '';
     },
 
     clear() {
       this.commands = []
+    },
+
+    usePreviousCommands(x) {
+      this.currentCommand += x
+
+      if(this.commandHistorycurrentCommand == this.commandHistory.length) 
+        this.currentCommand = this.commandHistory.length - 1;
+      else if(this.currentCommand < 0) {
+        this.currentCommand = 0;
+      }   
+
+      this.consoleInput = this.commandHistory[this.currentCommand]
+      console.log(this.consoleInput, this.currentCommand, x)
     }
   },
   mounted() {
