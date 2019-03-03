@@ -1,7 +1,31 @@
 <template>
   <body>
-    <div>{{err}}</div>
-    <div id="grid"></div>
+    <div id="container" class="row">
+      <div id="grid" class="col-md-6"></div>
+
+      <div id="terminal" class="col-md-6">
+        <div class="row">
+          <div id="terminal-log" class="col-sm-12">
+            <ul>
+              <li v-for="i in 8" :key="i">
+                {{ commands[8-i] }} 
+              </li>
+
+              <!-- <li v-for="i in commands" :key="i">
+                {{ commands[commands.length-i-1] }} 
+              </li> -->
+            </ul>
+          </div>
+
+          <div id="terminal-input" class="col-sm-12">
+            <div class="input-group">
+              <span style=";" class="form-control col-sm-1">></span>
+              <input type="text" class="form-control col-sm-11" v-model="consoleInput" @keyup.enter="submitCommand(consoleInput)" maxlength="10">    
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </template>
 
@@ -17,6 +41,8 @@ export default {
       err: '',
       ox: -1,
       oy: -1,
+      commands: [],
+      consoleInput: ''
     }
   },
   props: {
@@ -197,6 +223,47 @@ export default {
           else if (d.obstacle) { return "https://i.imgur.com/9z6Yclr.png" }
           else { return "https://i.imgur.com/y4lTohA.png" }
         });
+
+    submitCommand() { 
+      if(this.consoleInput == '-h' ||this.consoleInput == '-help') {
+        this.clear()
+        this.commands.unshift('', 'attack -h | List attack commands', 'move -h | List move commands', 'Help Commands: ')
+      }
+      else if(this.consoleInput == 'move -h') {
+        this.clear()
+        this.commands.unshift('', 'moveLeft()', 'moveDown()', 'moveRight()', 'moveUp()', 'Move Commands: ')
+      }
+      else if(this.consoleInput == 'attack -h') {
+        this.clear()
+        this.commands.unshift('', 'attackLeft()', 'attackDown()', 'attackRight()', 'attackUp()', 'Attack Commands: ')
+      }
+      else if(this.consoleInput == 'clear') {
+        this.clear()  
+      } 
+      else if(this.consoleInput == 'moveUp()') {
+        //moveUp()
+        this.commands.unshift(this.consoleInput)
+      }
+      else if(this.consoleInput == 'moveRight()') {
+        this.commands.unshift(this.consoleInput)
+        //moveRight()
+      }
+      else if(this.consoleInput == 'moveDown()') {
+        this.commands.unshift(this.consoleInput)
+        //moveDown()
+      }
+      else if(this.consoleInput == 'moveLeft()') {
+        this.commands.unshift(this.consoleInput)
+        //moveLeft()
+      }
+      else {
+        this.commands.unshift('No command  ' + this.consoleInput + ' exists, please try another command or type -h to see a list of the commands')
+      }
+      this.consoleInput = '';
+    },
+
+    clear() {
+      this.commands = []
     }
   },
   mounted() {
@@ -205,6 +272,15 @@ export default {
     document.head.appendChild(recaptchaScript)
 
     setTimeout(()=> {this.gridData = this.gridDataMethod();
+      this.grid = d3.select("#grid")
+        .append("svg")
+        .attr("width","500px")
+        .attr("height","500px");
+
+      this.row = this.grid.selectAll(".row")
+        .data(this.gridData)
+        .enter().append("g")
+        .attr("class", "row");
 
     this.grid = d3.select("#grid")
       .append("svg")
@@ -218,9 +294,7 @@ export default {
 
     this.column = this.row.selectAll(".square")
       .data(function(d) { return d; })
-      //.enter().append("rect")
       .enter().append("svg:image")
-      //.attr("class","square")
       .attr("xlink:href", (d) => {
         if (d.player) { return "https://i.imgur.com/2BgE0Gt.png" }
         else if (d.exit) { return "https://i.imgur.com/X0SIYn3.png" }
@@ -245,18 +319,83 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+  #container {
+    padding: 100px; 
+    width: 101vw;
+    height: 100vh;
+    background-color: #33393B;  
+  } 
+
+  #grid {
+    float: left; 
+  }
+
+  #terminal {
+    float: right;
+    background-color: #1E1E1E;
+    width: 500px; 
+    height: 400px;
+    box-shadow: 5px 10px 18px #888888;
+  }
+
+  #terminal-log {
+    height:320px;
+    width: 100%;
+    color: white; 
+    overflow:auto;
+  }
+
+  #terminal-input {
+    height: 80px;
+    width: 100%; 
+  }
+
+  #terminal-textbox {
+    max-width: 100%;
+    padding: 10px;  
+  }
+
+  ul {
+    padding-inline-start: 10px;
+  }
+
+  ul li {
+    color: #f1f1f1;
+    list-style: none; 
+  }
+
+  ul li::before {
+    color: white;  
+    content: "\003e"; 
+    font-size: 1em; 
+    padding-right: 1.1225em; 
+    position: relative;
+    top: 0em; 
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+
+  .form-control {
+    height: 50px;
+    margin-top: 15px;
+    padding: 0px;
+  }
+  
+  svg {
+    box-shadow: 5px 10px 18px #888888;
+    overflow: hidden;
+    vertical-align: middle;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.3); 
+    border-radius: 10px;
+  }
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px  rgba(255,255,255,0.5);  
 }
 </style>
