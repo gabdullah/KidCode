@@ -129,29 +129,66 @@ export default {
       this.column.each((d) => {
         if (direction == 'left') {
           if (this.ox == 1) result = false;
-          if ((this.ox - 50 == d.x) && d.obstacle && this.oy == d.y) {
+          if ((this.ox - 50 == d.x) && (d.obstacle || d.enemy || d.enemy2) && this.oy == d.y) {
             result = false;
           }
         }
         else if (direction == 'right') {
           if (this.ox == 451) result = false;
-          if ((this.ox + 50 == d.x) && d.obstacle && this.oy == d.y) {
+          if ((this.ox + 50 == d.x) && (d.obstacle || d.enemy || d.enemy2) && this.oy == d.y) {
             result = false;
           }
         }
         else if (direction == 'up') {
           if (this.oy == 1) result = false;
-          if ((this.oy - 50 == d.y) && d.obstacle && this.ox == d.x) {
+          if ((this.oy - 50 == d.y) && (d.obstacle || d.enemy || d.enemy2) && this.ox == d.x) {
             result = false;
           }
         }
         else if (direction == 'down') {
           if (this.oy == 451) result = false;
-          if ((this.oy + 50 == d.y) && d.obstacle && this.ox == d.x) {
+          if ((this.oy + 50 == d.y) && (d.obstacle || d.enemy || d.enemy2) && this.ox == d.x) {
             result = false;
           }
         }
       });
+
+      if (result == false)
+        this.commands.unshift('There is something blocking you from moving that way');
+
+      return result;
+    },
+
+    checkAttack(dir) {
+      var result = false;
+
+      // if ((this.ox + 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2)) ||
+      //       (this.ox - 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2)) ||
+      //       (this.oy + 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2)) ||
+      //       (this.oy - 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2)))
+
+      this.column.each((d) => {
+        if (dir == 'left') {
+          if (this.ox - 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2))
+            result = true;
+        }
+        else if (dir == 'right') {
+          if (this.ox + 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2))
+            result = true;
+        }
+        else if (dir == 'up') {
+          if (this.oy - 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2))
+            result = true;
+        }
+        else if (dir == 'left') {
+          if (this.oy + 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2))
+            result = true;
+        }
+      });
+        
+      if (result == false)
+        this.commands.unshift('There are no enemies in range');
+
       return result;
     },
 
@@ -168,9 +205,9 @@ export default {
           });
           this.update();
       }
-      else {
-        this.commands.unshift('Cannot move right');
-      }
+      // else {
+      //   this.commands.unshift('Cannot move right');
+      // }
     },
 
     moveLeft() {
@@ -186,9 +223,9 @@ export default {
           });
           this.update();
       }
-      else {
-        this.commands.unshift('Cannot move left');
-      }
+      // else {
+      //   this.commands.unshift('Cannot move left');
+      // }
     },
 
     moveUp() {
@@ -204,9 +241,9 @@ export default {
           });
           this.update();
       }
-      else {
-        this.commands.unshift('Cannot move up');
-      }
+      // else {
+      //   this.commands.unshift('Cannot move up');
+      // }
     },
 
     moveDown() {
@@ -222,8 +259,40 @@ export default {
           });
           this.update();
       }
-      else {
-        this.commands.unshift('Cannot move down');
+      // else {
+      //   this.commands.unshift('Cannot move down');
+      // }
+    },
+
+    attackLeft() {
+      this.getPlayerLoc();
+      if (this.checkAttack('left')) {
+        var rand = Math.floor(Math.random() * 10);
+        this.commands.unshift('Attacked mama bear for ' + rand + ' damage!')
+      }
+    },
+
+    attackRight() {
+      this.getPlayerLoc();
+      if (this.checkAttack('right')) {
+        var rand = Math.floor(Math.random() * 10);
+        this.commands.unshift('Attacked mama bear for ' + rand + ' damage!')
+      }
+    },
+
+    attackUp() {
+      this.getPlayerLoc();
+      if (this.checkAttack('up')) {
+        var rand = Math.floor(Math.random() * 10);
+        this.commands.unshift('Attacked mama bear for ' + rand + ' damage!')
+      }
+    },
+
+    attackDown() {
+      this.getPlayerLoc();
+      if (this.checkAttack('down')) {
+        var rand = Math.floor(Math.random() * 10);
+        this.commands.unshift('Attacked mama bear for ' + rand + ' damage!')
       }
     },
 
@@ -266,19 +335,35 @@ export default {
       } 
       else if(this.consoleInput == 'moveUp()') {
         this.moveUp()
-        this.commands.unshift(this.consoleInput)
+        this.commands.unshift(this.consoleInput, '')
       }
       else if(this.consoleInput == 'moveRight()') {
-        this.commands.unshift(this.consoleInput)
+        this.commands.unshift(this.consoleInput, '')
         this.moveRight()
       }
       else if(this.consoleInput == 'moveDown()') {
-        this.commands.unshift(this.consoleInput)
+        this.commands.unshift(this.consoleInput, '')
         this.moveDown()
       }
       else if(this.consoleInput == 'moveLeft()') {
-        this.commands.unshift(this.consoleInput)
+        this.commands.unshift(this.consoleInput, '')
         this.moveLeft()
+      }
+      else if(this.consoleInput == 'attackLeft()') {
+        this.commands.unshift(this.consoleInput, '')
+        this.attackLeft()
+      }
+      else if(this.consoleInput == 'attackRight()') {
+        this.commands.unshift(this.consoleInput, '')
+        this.attackRight()
+      }
+      else if(this.consoleInput == 'attackUp()') {
+        this.commands.unshift(this.consoleInput, '')
+        this.attackUp()
+      }
+      else if(this.consoleInput == 'attackDown()') {
+        this.commands.unshift(this.consoleInput, '')
+        this.attackDown()
       }
       else {
         this.commands.unshift('No command  ' + '"' + this.consoleInput + '"' + ' exists, please try another command or type -h to see a list of the commands')
