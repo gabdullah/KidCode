@@ -44,7 +44,9 @@ export default {
       commands: ['Welcome to KidCode! Type -h to get a list of commands.'],
       commandHistory: [],
       consoleInput: '',
-      currentCommand: 0
+      currentCommand: 0,
+      consoleInput: '',
+      pHealth: 50,
     }
   },
   props: {
@@ -62,6 +64,7 @@ export default {
       var exitRand = Math.floor(Math.random() * 10);
       var player = false;
       var exit = false;
+      var health = 0;
 
       // iterate for rows 
       for (var row = 0; row < 10; row++) {
@@ -76,11 +79,13 @@ export default {
           var enemy = false;
           var obstacle = false;
           if (enemyRand2 < 5) {
+            health = 15;
             enemy2 = true;
             obstacle = false;
             enemy = false;
           }
           else if (enemyRand < 5) {
+            health = 15;
             enemy = true;
             obstacle = false;
             enemy2 = false;
@@ -113,6 +118,7 @@ export default {
             exit: exit,
             enemy: enemy,
             enemy2: enemy2,
+            health: health,
           })
           // increment the x position. I.e. move it over by 50 (width variable)
           xpos += width;
@@ -171,10 +177,15 @@ export default {
         var rand = Math.floor(Math.random() * 100);
         var num = Math.floor(Math.random() * 7);
         if (rand < 46) {
-          this.commands.unshift('Mama bear (' + (Math.round(d.x/50)+1) + ', ' + (Math.round(d.y/50)+1) + ') slashes you for ' + num + ' damage!')
+          this.pHealth -= num;
+          this.commands.unshift('Mama bear slashes you for ' + num + ' damage! ' + this.pHealth + ' health left')
+
+          if (this.pHealth <= 0) {
+            this.commands.unshift('Whoops, the bears ate your intestines!')
+          }
         }
         else {
-          this.commands.unshift('Mama bear (' + (Math.round(d.x/50)+1) + ', ' + (Math.round(d.y/50)+1) + ') watches you impatiently')
+          this.commands.unshift('Mama bear watches you impatiently')
         }
       }});
 
@@ -182,28 +193,46 @@ export default {
 
     checkAttack(dir) {
       var result = false;
-
-      // if ((this.ox + 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2)) ||
-      //       (this.ox - 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2)) ||
-      //       (this.oy + 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2)) ||
-      //       (this.oy - 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2)))
+      var rand = Math.floor(Math.random() * 10);
 
       this.column.each((d) => {
         if (dir == 'left') {
-          if (this.ox - 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2))
+          if (this.ox - 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2)) {
+            d.health = d.health - rand;
+            this.commands.unshift('Whipped on mama bear for ' + rand + ' damage! ' + d.health + ' health left')
+
             result = true;
+          }
         }
         else if (dir == 'right') {
-          if (this.ox + 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2))
+          if (this.ox + 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2)) {
+            d.health = d.health - rand;
+            this.commands.unshift('Whipped on mama bear for ' + rand + ' damage! ' + d.health + ' health left')
+
             result = true;
+          }
         }
         else if (dir == 'up') {
-          if (this.oy - 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2))
+          if (this.oy - 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2)) {
+            d.health = d.health - rand;
+            this.commands.unshift('Whipped on mama bear for ' + rand + ' damage! ' + d.health + ' health left')
+
             result = true;
+          }
         }
-        else if (dir == 'left') {
-          if (this.oy + 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2))
+        else if (dir == 'down') {
+          if (this.oy + 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2)) {
+            d.health = d.health - rand;
+            this.commands.unshift('Whipped on mama bear for ' + rand + ' damage! ' + d.health + ' health left')
+
             result = true;
+          }
+        }
+        if (d.health <= 0) {
+          if (d.enemy) d.enemy = false
+          if (d.enemy2) d.enemy2 = false
+
+          this.update();      
         }
       });
         
@@ -211,7 +240,7 @@ export default {
         this.commands.unshift('There are no enemies in range');
 
       this.enemyAttack();
-      return result;
+      //return result;
     },
 
     moveRight() {
@@ -227,9 +256,6 @@ export default {
           });
           this.update();
       }
-      // else {
-      //   this.commands.unshift('Cannot move right');
-      // }
     },
 
     moveLeft() {
@@ -245,9 +271,6 @@ export default {
           });
           this.update();
       }
-      // else {
-      //   this.commands.unshift('Cannot move left');
-      // }
     },
 
     moveUp() {
@@ -263,9 +286,6 @@ export default {
           });
           this.update();
       }
-      // else {
-      //   this.commands.unshift('Cannot move up');
-      // }
     },
 
     moveDown() {
@@ -281,41 +301,26 @@ export default {
           });
           this.update();
       }
-      // else {
-      //   this.commands.unshift('Cannot move down');
-      // }
     },
 
     attackLeft() {
       this.getPlayerLoc();
-      if (this.checkAttack('left')) {
-        var rand = Math.floor(Math.random() * 10);
-        this.commands.unshift('Attacked mama bear for ' + rand + ' damage!')
-      }
+      this.checkAttack('left')
     },
 
     attackRight() {
       this.getPlayerLoc();
-      if (this.checkAttack('right')) {
-        var rand = Math.floor(Math.random() * 10);
-        this.commands.unshift('Attacked mama bear for ' + rand + ' damage!')
-      }
+      this.checkAttack('right')
     },
 
     attackUp() {
       this.getPlayerLoc();
-      if (this.checkAttack('up')) {
-        var rand = Math.floor(Math.random() * 10);
-        this.commands.unshift('Attacked mama bear for ' + rand + ' damage!')
-      }
+      this.checkAttack('up')
     },
 
     attackDown() {
       this.getPlayerLoc();
-      if (this.checkAttack('down')) {
-        var rand = Math.floor(Math.random() * 10);
-        this.commands.unshift('Attacked mama bear for ' + rand + ' damage!')
-      }
+      this.checkAttack('down')
     },
 
     getPlayerLoc() {
