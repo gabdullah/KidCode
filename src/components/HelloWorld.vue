@@ -156,7 +156,26 @@ export default {
       if (result == false)
         this.commands.unshift('There is something blocking you from moving that way');
 
+      this.enemyAttack();
       return result;
+    },
+
+    enemyAttack() {
+      this.column.each((d) => {
+      if ((this.ox + 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2)) ||
+          (this.ox - 50 == d.x && this.oy == d.y && (d.enemy || d.enemy2)) ||
+          (this.oy + 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2)) ||
+          (this.oy - 50 == d.y && this.ox == d.x && (d.enemy || d.enemy2))) {
+        var rand = Math.floor(Math.random() * 100);
+        var num = Math.floor(Math.random() * 7);
+        if (rand < 46) {
+          this.commands.unshift('Mama bear (' + (Math.round(d.x/50)+1) + ', ' + (Math.round(d.y/50)+1) + ') slashes you for ' + num + ' damage!')
+        }
+        else {
+          this.commands.unshift('Mama bear (' + (Math.round(d.x/50)+1) + ', ' + (Math.round(d.y/50)+1) + ') watches you impatiently')
+        }
+      }});
+
     },
 
     checkAttack(dir) {
@@ -189,6 +208,7 @@ export default {
       if (result == false)
         this.commands.unshift('There are no enemies in range');
 
+      this.enemyAttack();
       return result;
     },
 
