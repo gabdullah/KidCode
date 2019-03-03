@@ -68,8 +68,11 @@ export default {
         // iterate for cells/columns inside rows
         for (var column = 0; column < 10; column++) {
           var rand = Math.floor(Math.random() * 10);
+          var enemyRand = Math.floor(Math.random() * 10);
+          var enemy = false;
           var obstacle = false;
-          if (rand < 3) obstacle = true;
+          if (rand < 2) obstacle = true;
+          if (enemyRand < 1) enemy = true;
           if (column == 0 && row == playerRand) {
             console.log(column, row)
             player = true;
@@ -90,6 +93,7 @@ export default {
             obstacle: obstacle,
             player: player,
             exit: exit,
+            enemy: enemy,
           })
           // increment the x position. I.e. move it over by 50 (width variable)
           xpos += width;
@@ -221,6 +225,7 @@ export default {
           if (d.player) { return "https://i.imgur.com/2BgE0Gt.png" }
           else if (d.exit) { return "https://i.imgur.com/X0SIYn3.png" }
           else if (d.obstacle) { return "https://i.imgur.com/9z6Yclr.png" }
+          else if (d.enemy) { return "https://i.imgur.com/RAJS4Df.png" }
           else { return "https://i.imgur.com/y4lTohA.png" }
         });
       },
@@ -291,6 +296,7 @@ export default {
         if (d.player) { return "https://i.imgur.com/2BgE0Gt.png" }
         else if (d.exit) { return "https://i.imgur.com/X0SIYn3.png" }
         else if (d.obstacle) { return "https://i.imgur.com/9z6Yclr.png" }
+        else if (d.enemy) { return "https://i.imgur.com/RAJS4Df.png" }
         else { return "https://i.imgur.com/y4lTohA.png" }
       })
       .attr("x", function(d) { return d.x; })
@@ -300,11 +306,6 @@ export default {
       });
       
     }, 300)
-    
-    // setTimeout(() => { this.moveRight() }, 1500)
-    // setTimeout(() => { this.moveDown() }, 3000)
-    // setTimeout(() => { this.moveLeft() }, 4500)
-    // setTimeout(() => { this.moveUp() }, 6000)
   },
 };
 </script>
