@@ -8,15 +8,19 @@
           <div id="terminal-log" class="col-sm-12">
             <ul>
               <li v-for="i in 8" :key="i">
-                 {{ commands[8-i] }}
+                {{ commands[8-i] }} 
               </li>
+
+              <!-- <li v-for="i in commands" :key="i">
+                {{ commands[commands.length-i-1] }} 
+              </li> -->
             </ul>
           </div>
 
           <div id="terminal-input" class="col-sm-12">
             <div class="input-group">
               <span style=";" class="form-control col-sm-1">></span>
-              <input type="text" class="form-control col-sm-11" v-model="consoleInput" @keyup.enter="submitCommand(consoleInput)">    
+              <input type="text" class="form-control col-sm-11" v-model="consoleInput" @keyup.enter="submitCommand(consoleInput)" maxlength="10">    
             </div>
           </div>
         </div>
@@ -108,7 +112,6 @@ export default {
       }
       else {
         this.commands.unshift('No command  ' + this.consoleInput + ' exists, please try another command or type -h to see a list of the commands')
-        console.log(this.commands[0])
       }
       this.consoleInput = '';
     },
@@ -125,8 +128,8 @@ export default {
     setTimeout(()=> {this.gridData = this.gridDataMethod();
       this.grid = d3.select("#grid")
         .append("svg")
-        .attr("width","510px")
-        .attr("height","510px");
+        .attr("width","500px")
+        .attr("height","500px");
 
       this.row = this.grid.selectAll(".row")
         .data(this.gridData)
@@ -157,30 +160,33 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  #container {
+    padding: 100px; 
+    width: 101vw;
+    height: 100vh;
+    background-color: #33393B;  
+  } 
+
   #grid {
     float: left; 
   }
 
-  #container {
-    padding: 100px; 
-  } 
-
   #terminal {
-    background-color: black;
+    float: right;
+    background-color: #1E1E1E;
     width: 500px; 
     height: 400px;
-    float: right;
+    box-shadow: 5px 10px 18px #888888;
   }
 
   #terminal-log {
-    background-color: blue;
     height:320px;
     width: 100%;
     color: white; 
+    overflow:auto;
   }
 
   #terminal-input {
-    background-color: red;
     height: 80px;
     width: 100%; 
   }
@@ -190,13 +196,47 @@ export default {
     padding: 10px;  
   }
 
+  ul {
+    padding-inline-start: 10px;
+  }
+
+  ul li {
+    color: #f1f1f1;
+    list-style: none; 
+  }
+
+  ul li::before {
+    color: white;  
+    content: "\003e"; 
+    font-size: 1em; 
+    padding-right: 1.1225em; 
+    position: relative;
+    top: 0em; 
+}
+
   .form-control {
     height: 50px;
     margin-top: 15px;
     padding: 0px;
   }
-
-  input {
-    caret-color: blue;
+  
+  svg {
+    box-shadow: 5px 10px 18px #888888;
+    overflow: hidden;
+    vertical-align: middle;
   }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.3); 
+    border-radius: 10px;
+  }
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px  rgba(255,255,255,0.5);  
+}
 </style>
