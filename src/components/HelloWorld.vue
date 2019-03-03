@@ -6,13 +6,18 @@
       <div id="terminal" class="col-md-6">
         <div class="row">
           <div id="terminal-log" class="col-sm-12">
-            
-
+            <ul>
+              <li v-for="i in 8" :key="i">
+                 {{ commands[8-i] }}
+              </li>
+            </ul>
           </div>
 
           <div id="terminal-input" class="col-sm-12">
-            
-
+            <div class="input-group">
+              <span style=";" class="form-control col-sm-1">></span>
+              <input type="text" class="form-control col-sm-11" v-model="consoleInput" @keyup.enter="submitCommand(consoleInput)">    
+            </div>
           </div>
         </div>
       </div>
@@ -29,6 +34,8 @@ export default {
       grid: '',
       row: '',
       column: '',
+      commands: [],
+      consoleInput: ''
     }
   },
   props: {
@@ -65,6 +72,49 @@ export default {
         ypos += height; 
       }
       return data;
+    },
+
+    submitCommand() { 
+      if(this.consoleInput == '-h' ||this.consoleInput == '-help') {
+        this.clear()
+        this.commands.unshift('', 'attack -h | List attack commands', 'move -h | List move commands', 'Help Commands: ')
+      }
+      else if(this.consoleInput == 'move -h') {
+        this.clear()
+        this.commands.unshift('', 'moveLeft()', 'moveDown()', 'moveRight()', 'moveUp()', 'Move Commands: ')
+      }
+      else if(this.consoleInput == 'attack -h') {
+        this.clear()
+        this.commands.unshift('', 'attackLeft()', 'attackDown()', 'attackRight()', 'attackUp()', 'Attack Commands: ')
+      }
+      else if(this.consoleInput == 'clear') {
+        this.clear()  
+      } 
+      else if(this.consoleInput == 'moveUp()') {
+        //moveUp()
+        this.commands.unshift(this.consoleInput)
+      }
+      else if(this.consoleInput == 'moveRight()') {
+        this.commands.unshift(this.consoleInput)
+        //moveRight()
+      }
+      else if(this.consoleInput == 'moveDown()') {
+        this.commands.unshift(this.consoleInput)
+        //moveDown()
+      }
+      else if(this.consoleInput == 'moveLeft()') {
+        this.commands.unshift(this.consoleInput)
+        //moveLeft()
+      }
+      else {
+        this.commands.unshift('No command  ' + this.consoleInput + ' exists, please try another command or type -h to see a list of the commands')
+        console.log(this.commands[0])
+      }
+      this.consoleInput = '';
+    },
+
+    clear() {
+      this.commands = []
     }
   },
   mounted() {
@@ -125,13 +175,28 @@ export default {
   #terminal-log {
     background-color: blue;
     height:320px;
-    width: 100% ; 
+    width: 100%;
+    color: white; 
   }
 
   #terminal-input {
     background-color: red;
     height: 80px;
     width: 100%; 
-    margin: 10px; 
+  }
+
+  #terminal-textbox {
+    max-width: 100%;
+    padding: 10px;  
+  }
+
+  .form-control {
+    height: 50px;
+    margin-top: 15px;
+    padding: 0px;
+  }
+
+  input {
+    caret-color: blue;
   }
 </style>
