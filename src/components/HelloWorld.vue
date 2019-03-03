@@ -223,6 +223,7 @@ export default {
           else if (d.obstacle) { return "https://i.imgur.com/9z6Yclr.png" }
           else { return "https://i.imgur.com/y4lTohA.png" }
         });
+      },
 
     submitCommand() { 
       if(this.consoleInput == '-h' ||this.consoleInput == '-help') {
@@ -272,15 +273,6 @@ export default {
     document.head.appendChild(recaptchaScript)
 
     setTimeout(()=> {this.gridData = this.gridDataMethod();
-      this.grid = d3.select("#grid")
-        .append("svg")
-        .attr("width","500px")
-        .attr("height","500px");
-
-      this.row = this.grid.selectAll(".row")
-        .data(this.gridData)
-        .enter().append("g")
-        .attr("class", "row");
 
     this.grid = d3.select("#grid")
       .append("svg")
