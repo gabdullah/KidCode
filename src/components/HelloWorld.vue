@@ -68,11 +68,27 @@ export default {
         // iterate for cells/columns inside rows
         for (var column = 0; column < 10; column++) {
           var rand = Math.floor(Math.random() * 10);
-          var enemyRand = Math.floor(Math.random() * 10);
+          var enemyRand = Math.floor(Math.random() * 100);
+          var enemyRand2 = Math.floor(Math.random() * 100);
+          var enemy2 = false;
           var enemy = false;
           var obstacle = false;
-          if (rand < 2) obstacle = true;
-          if (enemyRand < 1) enemy = true;
+          if (enemyRand2 < 5) {
+            enemy2 = true;
+            obstacle = false;
+            enemy = false;
+          }
+          else if (enemyRand < 5) {
+            enemy = true;
+            obstacle = false;
+            enemy2 = false;
+          }
+          else if (rand < 2) {
+            obstacle = true;
+            enemy = false;
+            enemy2 = false;
+          }
+          
           if (column == 0 && row == playerRand) {
             console.log(column, row)
             player = true;
@@ -94,6 +110,7 @@ export default {
             player: player,
             exit: exit,
             enemy: enemy,
+            enemy2: enemy2,
           })
           // increment the x position. I.e. move it over by 50 (width variable)
           xpos += width;
@@ -226,6 +243,7 @@ export default {
           else if (d.exit) { return "https://i.imgur.com/X0SIYn3.png" }
           else if (d.obstacle) { return "https://i.imgur.com/9z6Yclr.png" }
           else if (d.enemy) { return "https://i.imgur.com/RAJS4Df.png" }
+          else if (d.enemy2) { return "https://i.imgur.com/88Rus2X.png" }
           else { return "https://i.imgur.com/y4lTohA.png" }
         });
       },
@@ -297,6 +315,7 @@ export default {
         else if (d.exit) { return "https://i.imgur.com/X0SIYn3.png" }
         else if (d.obstacle) { return "https://i.imgur.com/9z6Yclr.png" }
         else if (d.enemy) { return "https://i.imgur.com/RAJS4Df.png" }
+        else if (d.enemy2) { return "https://i.imgur.com/88Rus2X.png" }
         else { return "https://i.imgur.com/y4lTohA.png" }
       })
       .attr("x", function(d) { return d.x; })
