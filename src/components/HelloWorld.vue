@@ -407,9 +407,9 @@ export default {
     usePreviousCommands(x) {
       this.currentCommand += x
 
-      if(this.commandHistorycurrentCommand == this.commandHistory.length) 
+      if(this.currentCommand >= this.commandHistory.length) 
         this.currentCommand = this.commandHistory.length - 1;
-      else if(this.currentCommand < 0) {
+      else if(this.currentCommand <= 0) {
         this.currentCommand = 0;
       }   
 
