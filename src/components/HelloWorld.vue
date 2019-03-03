@@ -20,7 +20,7 @@
           <div id="terminal-input" class="col-sm-12">
             <div class="input-group">
               <span style=";" class="form-control col-sm-1">></span>
-              <input type="text" class="form-control col-sm-11" v-model="consoleInput" @keyup.enter="submitCommand(consoleInput)" maxlength="10">    
+              <input type="text" class="form-control col-sm-11" v-model="consoleInput" @keyup.enter="submitCommand(consoleInput)" maxlength="15">    
             </div>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default {
           this.update();
       }
       else {
-        this.err = 'Cannot move right';
+        this.commands.unshift('Cannot move right');
       }
     },
 
@@ -166,7 +166,7 @@ export default {
           this.update();
       }
       else {
-        this.err = 'Cannot move left';
+        this.commands.unshift('Cannot move left');
       }
     },
 
@@ -184,7 +184,7 @@ export default {
           this.update();
       }
       else {
-        this.err = 'Cannot move up';
+        this.commands.unshift('Cannot move up');
       }
     },
 
@@ -202,7 +202,7 @@ export default {
           this.update();
       }
       else {
-        this.err = 'Cannot move down';
+        this.commands.unshift('Cannot move down');
       }
     },
 
@@ -242,20 +242,20 @@ export default {
         this.clear()  
       } 
       else if(this.consoleInput == 'moveUp()') {
-        //moveUp()
+        this.moveUp()
         this.commands.unshift(this.consoleInput)
       }
       else if(this.consoleInput == 'moveRight()') {
         this.commands.unshift(this.consoleInput)
-        //moveRight()
+        this.moveRight()
       }
       else if(this.consoleInput == 'moveDown()') {
         this.commands.unshift(this.consoleInput)
-        //moveDown()
+        this.moveDown()
       }
       else if(this.consoleInput == 'moveLeft()') {
         this.commands.unshift(this.consoleInput)
-        //moveLeft()
+        this.moveLeft()
       }
       else {
         this.commands.unshift('No command  ' + this.consoleInput + ' exists, please try another command or type -h to see a list of the commands')
@@ -301,10 +301,10 @@ export default {
       
     }, 300)
     
-    setTimeout(() => { this.moveRight() }, 1500)
-    setTimeout(() => { this.moveDown() }, 3000)
-    setTimeout(() => { this.moveLeft() }, 4500)
-    setTimeout(() => { this.moveUp() }, 6000)
+    // setTimeout(() => { this.moveRight() }, 1500)
+    // setTimeout(() => { this.moveDown() }, 3000)
+    // setTimeout(() => { this.moveLeft() }, 4500)
+    // setTimeout(() => { this.moveUp() }, 6000)
   },
 };
 </script>
